@@ -1,0 +1,23 @@
+{
+  "name": "better-onetab-sync-server",
+  "version": "1.0.0",
+  "description": "better onetab sync server",
+  "main": "index.js",
+  "repository": "git",
+  "author": "cnwangjie",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "@cnwangjie/conf": "^1.0.0",
+    "googleapis": "^32.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "koa": "^2.5.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "koa2-cors": "^2.0.6",
+    "mongoose": "^5.2.7",
+    "supertest": "^3.1.0"
+  }
+}
