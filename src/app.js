@@ -16,7 +16,7 @@ app.use(bodyparser())
 app.use(async (ctx, next) => {
   Object.defineProperty(ctx, 'input', {
     get() {
-      return Object.assign({}, ctx.body, ctx.query, ctx.params)
+      return Object.assign({}, ctx.request.body, ctx.query, ctx.params)
     }
   })
   return next()

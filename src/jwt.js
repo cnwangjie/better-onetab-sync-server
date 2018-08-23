@@ -35,7 +35,7 @@ const authMiddleware = async (ctx, next) => {
     }
   }
   await next()
-  if (ctx.user) {
+  if (ctx.user && !ctx.headerSent) {
     ctx.res.setHeader(jwtHeader, genTokenForUser(ctx.user))
   }
 }

@@ -4,13 +4,21 @@ const { listSchema } = require('./list')
 const { genUid, genToken, verifyToken } = require('../util')
 
 const userSchema = new mongoose.Schema({
-  userOptions: {
+  opts: {
     type: optsSchema,
     default: {},
+  },
+  optsUpdatedAt: {
+    type: Date,
+    default: 0,
   },
   lists: {
     type: [listSchema],
     default: [],
+  },
+  listsUpdatedAt: {
+    type: Date,
+    default: 0,
   },
   uid: {
     type: String,
@@ -27,7 +35,7 @@ const userSchema = new mongoose.Schema({
   toObject: {
     getters: true,
     versionKey: false,
-  }
+  },
 }).method({
   async addList(list) {
     this.lists.unshift(list)
