@@ -30,9 +30,11 @@ app.use(async (ctx, next) => {
     error = e
   }
   console.log(`[${new Date().toLocaleString()}] ${ctx.method} ${ctx.path} (${ctx.status}) ${Date.now() - startTime}ms`)
-  if (error) {
-    console.log(`[input]:`, ctx.input)
-    console.log(`[error]`, error)
+  if (error || ctx.status >= 400) {
+    if (ctx.input) console.log(`[input]:`, ctx.input)
+    if (error) console.log(`[error]`, error)
+    if (ctx.state) console.log(`[state]`, ctx.state)
+    if (ctx.user) console.log(`[user]`, ctx.user)
   }
 })
 app.use(apiRouter.routes())

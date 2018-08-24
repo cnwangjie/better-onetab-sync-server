@@ -8,4 +8,8 @@ module.exports = {
     client_id: '',
     client_secret: '',
   },
+  github: {
+    client_id: '',
+    client_secret: '',
+  },
 }

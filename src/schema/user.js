@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   googleId: String,
+  googleEmail: String,
+  githubId: String,
+  githubName: String,
 }, {
   timestamps: true,
   toObject: {

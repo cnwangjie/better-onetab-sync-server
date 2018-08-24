@@ -32,7 +32,9 @@ authorizeApiRouter.use(jwt.authMiddleware)
  * @api {get} /api/info 权限测试及更新token以及获取更新时间
  */
 authorizeApiRouter.get('/info', async ctx => {
-  if (ctx.user) ctx.body = _.pick(ctx.user, ['uid', 'listsUpdatedAt', 'optsUpdatedAt'])
+  if (ctx.user) ctx.body = _.pick(ctx.user, [
+    'uid', 'listsUpdatedAt', 'optsUpdatedAt', 'googleId', 'githubId',
+  ])
 })
 /**
  * @api {get} /api/lists 获取所有列表
