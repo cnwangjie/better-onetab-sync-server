@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   googleId: String,
-  googleEmail: String,
+  googleName: String,
   githubId: String,
   githubName: String,
 }, {

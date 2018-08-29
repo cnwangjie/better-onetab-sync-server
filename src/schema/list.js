@@ -27,6 +27,9 @@ const listSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  color: {
+    type: String,
+  },
 })
 
 module.exports = { listSchema }

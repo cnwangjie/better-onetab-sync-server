@@ -22,7 +22,7 @@ authRouter.get('/google', async ctx => {
     if (ctx.input.state) redirectTo += '&state=' + ctx.input.state
     ctx.redirect(redirectTo)
   } else {
-    const {id} = await google.getUserInfoByAuthorizationCode(ctx.input.code)
+    const {id, name} = await google.getUserInfoByAuthorizationCode(ctx.input.code)
     if (ctx.state && ctx.state.uid) {
       ctx.user = await User.findOne({uid: ctx.state.uid})
       if (!ctx.user.googleId) {
@@ -31,6 +31,10 @@ authRouter.get('/google', async ctx => {
       }
     } else {
       ctx.user = await User.findOne({googleId: id}) || await User.create({googleId: id})
+    }
+    if (ctx.user.googleName !== name) {
+      ctx.user.googleName = name
+      await ctx.user.save()
     }
     ctx.body = 'success'
     if (ctx.state && ctx.state.ext) {
@@ -48,7 +52,7 @@ authRouter.get('/github', async ctx => {
     if (ctx.input.state) redirectTo += '&state=' + ctx.input.state
     ctx.redirect(redirectTo)
   } else {
-    const {id} = await github.getUserInfoByAuthorizationCode(ctx.input.code, ctx.input.state)
+    const {id, login} = await github.getUserInfoByAuthorizationCode(ctx.input.code, ctx.input.state)
     if (ctx.state && ctx.state.uid) {
       ctx.user = await User.findOne({uid: ctx.state.uid})
       if (!ctx.user.githubId) {
@@ -57,6 +61,10 @@ authRouter.get('/github', async ctx => {
       }
     } else {
       ctx.user = await User.findOne({githubId: id}) || await User.create({githubId: id})
+    }
+    if (ctx.user.githubName !== login) {
+      ctx.user.githubName = login
+      await ctx.user.save()
     }
     ctx.body = 'success'
     if (ctx.state && ctx.state.ext) {

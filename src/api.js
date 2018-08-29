@@ -33,7 +33,8 @@ authorizeApiRouter.use(jwt.authMiddleware)
  */
 authorizeApiRouter.get('/info', async ctx => {
   if (ctx.user) ctx.body = _.pick(ctx.user, [
-    'uid', 'listsUpdatedAt', 'optsUpdatedAt', 'googleId', 'githubId',
+    'uid', 'listsUpdatedAt', 'optsUpdatedAt',
+    'googleId', 'googleName', 'githubId', 'githubName',
   ])
 })
 /**
