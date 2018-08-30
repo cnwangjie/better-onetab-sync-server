@@ -10,6 +10,7 @@ apiRouter.use(cors({
   origin: '*',
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
   allowHeaders: [conf.jwt_header],
+  exposeHeaders: [conf.jwt_header],
 }))
 apiRouter.options('*', ctx => {
   ctx.status = 200

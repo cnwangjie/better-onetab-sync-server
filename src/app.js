@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const bodyparser = require('koa-bodyparser')
 const apiRouter = require('./api')
 const authRouter = require('./auth')
+const crypto = require('crypto')
 
 mongoose.connect(conf.mongodb, {
   useNewUrlParser: true,
@@ -23,13 +24,15 @@ app.use(async (ctx, next) => {
 })
 app.use(async (ctx, next) => {
   const startTime = Date.now()
+  const id = crypto.randomBytes(3).toString('hex')
   let error
+  console.log(`[${new Date().toLocaleString()}] ${id} <- ${ctx.method} ${ctx.path} `)
   try {
     await next()
   } catch (e) {
     error = e
   }
-  console.log(`[${new Date().toLocaleString()}] ${ctx.method} ${ctx.path} (${ctx.status}) ${Date.now() - startTime}ms`)
+  console.log(`[${new Date().toLocaleString()}] ${id} -> (${ctx.status}) +${Date.now() - startTime}ms\n`)
   if (error || ctx.status >= 400) {
     if (ctx.input) console.log(`[input]:`, ctx.input)
     if (error) console.log(`[error]`, error)
