@@ -40,6 +40,10 @@ app.use(async (ctx, next) => {
     if (ctx.user) console.log(`[user]`, ctx.user)
   }
 })
+app.use(async (ctx, next) => {
+  if (ctx.path === '/') ctx.body = 'ok'
+  await next()
+})
 app.use(apiRouter.routes())
 app.use(authRouter.routes())
 
