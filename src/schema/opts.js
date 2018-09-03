@@ -25,6 +25,21 @@ const optsSchema = new mongoose.Schema({
   pageContext: {
     type: Boolean,
   },
+  openTabListWhenNewTab: {
+    type: Boolean,
+  },
+  defaultNightMode: {
+    type: Boolean,
+  },
+  itemDisplay: {
+    type: String,
+  },
+  hideFavicon: {
+    type: Boolean,
+  },
+  fixedToolbar: {
+    type: Boolean,
+  },
 })
 
 module.exports = { optsSchema }

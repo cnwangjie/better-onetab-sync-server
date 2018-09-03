@@ -20,7 +20,7 @@ app.use(async (ctx, next) => {
       return Object.assign({}, ctx.request.body, ctx.query, ctx.params)
     }
   })
-  return next()
+  await next()
 })
 app.use(async (ctx, next) => {
   const startTime = Date.now()
