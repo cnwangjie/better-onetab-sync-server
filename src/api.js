@@ -14,6 +14,7 @@ apiRouter.use(cors({
 }))
 apiRouter.options('*', ctx => {
   ctx.status = 200
+  ctx.res.end()
 })
 apiRouter.use(async (ctx, next) => {
   await next()

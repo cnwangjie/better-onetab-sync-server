@@ -1,0 +1,9 @@
+version: '2'
+services:
+  mongo:
+    image: mongo:4.0.2
+    restart: always
+    volumes:
+      - /data/db:/data/db
+    ports:
+      - 6379:6379
