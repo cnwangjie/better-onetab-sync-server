@@ -19,6 +19,7 @@ const optsSchema = new mongoose.Schema({
   excludeIllegalURL: Boolean,
   removeDuplicate: Boolean,
   enableSearch: Boolean,
+  openEnd: Boolean,
 })
 
 module.exports = { optsSchema }
