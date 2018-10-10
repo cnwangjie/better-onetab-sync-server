@@ -28,7 +28,7 @@ const getToken = async (code, state) => {
   return res.access_token
 }
 
-const getUserInfoByAuthorizationCode = async (code, state) => {
+const getUserInfoByAuthorizationCode = async ({code, state}) => {
   const token = await getToken(code, state)
   const info = await rp({
     url: 'https://api.github.com/user',
@@ -39,7 +39,10 @@ const getUserInfoByAuthorizationCode = async (code, state) => {
     },
     json: true,
   })
-  return info
+  return {
+    id: info.id,
+    name: info.login,
+  }
 }
 
 module.exports = {

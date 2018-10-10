@@ -6,69 +6,47 @@ const jwt = require('./jwt')
 
 const authRouter = module.exports = new Router({prefix: '/auth'})
 authRouter.use(jwt.authMiddleware)
-authRouter.use(async (ctx, next) => {
-  if (ctx.input.state) {
-    const state = ctx.input.state.split(';').map(i => i.split(':')).reduce((r, [k, ...v]) => {
+
+const oauthServices = { google, github }
+
+authRouter.get('/:type', async ctx => {
+
+  const {type} = ctx.params
+  if (!Reflect.has(oauthServices, type)) return ctx.status = 404
+  const oauth = oauthServices[type]
+
+  const state = ctx.input.state ? ctx.input.state.split(';')
+    .map(i => i.split(':'))
+    .reduce((r, [k, ...v]) => {
       r[k] = v.join(':')
       return r
-    }, {})
-    Object.assign(ctx.state, state)
-  }
-  return next()
-})
-authRouter.get('/google', async ctx => {
-  if (!ctx.input.code) {
-    let redirectTo = google.generateAuthUrl()
-    if (ctx.input.state) redirectTo += '&state=' + ctx.input.state
-    ctx.redirect(redirectTo)
-  } else {
-    const {id, name} = await google.getUserInfoByAuthorizationCode(ctx.input.code)
-    if (ctx.state && ctx.state.uid) {
-      ctx.user = await User.findOne({uid: ctx.state.uid})
-      if (!ctx.user.googleId) {
-        ctx.user.googleId = id
-        await ctx.user.save()
-      }
-    } else {
-      ctx.user = await User.findOne({googleId: id}) || await User.create({googleId: id})
-    }
-    if (ctx.user.googleName !== name) {
-      ctx.user.googleName = name
-      await ctx.user.save()
-    }
-    ctx.body = 'success'
-    if (ctx.state && ctx.state.ext) {
-      const lend = ctx.state.ext
-      const token = jwt.genTokenForUser(ctx.user)
-      const to = lend + '#' + token + '#'
-      ctx.redirect(to)
-    }
-  }
-})
+    }, {}) : {}
 
-authRouter.get('/github', async ctx => {
   if (!ctx.input.code) {
-    let redirectTo = github.generateAuthUrl()
+    let redirectTo = oauth.generateAuthUrl()
     if (ctx.input.state) redirectTo += '&state=' + ctx.input.state
     ctx.redirect(redirectTo)
   } else {
-    const {id, login} = await github.getUserInfoByAuthorizationCode(ctx.input.code, ctx.input.state)
-    if (ctx.state && ctx.state.uid) {
-      ctx.user = await User.findOne({uid: ctx.state.uid})
-      if (!ctx.user.githubId) {
-        ctx.user.githubId = id
+    const {id, name} = await oauth.getUserInfoByAuthorizationCode(ctx.input)
+
+    const oauthIdKey = type + 'Id'
+    const oauthNameKey = type + 'Name'
+    if (state.uid) {
+      ctx.user = await User.findOne({uid: state.uid})
+      if (!ctx.user[oauthIdKey]) {
+        ctx.user[oauthIdKey] = id
         await ctx.user.save()
       }
     } else {
-      ctx.user = await User.findOne({githubId: id}) || await User.create({githubId: id})
+      ctx.user = await User.findOne({[oauthIdKey]: id}) || await User.create({[oauthIdKey]: id})
     }
-    if (ctx.user.githubName !== login) {
-      ctx.user.githubName = login
+
+    if (ctx.user[oauthNameKey] !== name) {
+      ctx.user[oauthNameKey] = name
       await ctx.user.save()
     }
-    ctx.body = 'success'
-    if (ctx.state && ctx.state.ext) {
-      const lend = ctx.state.ext
+    if (state.ext) {
+      const lend = state.ext
       const token = jwt.genTokenForUser(ctx.user)
       const to = lend + '#' + token + '#'
       ctx.redirect(to)

@@ -8,15 +8,18 @@ const createNewOauth2Client = () => new google.auth.OAuth2(
 )
 // refer: https://github.com/google/google-api-nodejs-client/#oauth2-client
 const generateAuthUrl = () => createNewOauth2Client().generateAuthUrl({scope})
-const getUserInfoByAuthorizationCode = async authorizationCode => {
+const getUserInfoByAuthorizationCode = async ({code: authorizationCode}) => {
   const auth = createNewOauth2Client()
   const {tokens} = await auth.getToken(authorizationCode)
   auth.setCredentials(tokens)
   const oauth2 = google.oauth2('v2')
   oauth2._options.auth = auth
   // refer: https://google.github.io/google-api-nodejs-client/classes/_apis_oauth2_v2_.resource_userinfo.html
-  const result = await oauth2.userinfo.get()
-  return result.data
+  const {data} = await oauth2.userinfo.get()
+  return {
+    id: data.id,
+    name: data.name,
+  }
 }
 
 module.exports = { generateAuthUrl, getUserInfoByAuthorizationCode }
