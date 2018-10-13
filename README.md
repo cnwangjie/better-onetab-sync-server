@@ -53,17 +53,17 @@ So in the new version of sync server will provide a or more user friendly login 
 
 **v2 (planning)**
 
-##### POST `/v2/api/list/:id` Create a new list.
+##### POST `/api/v2/list` Create a new list.
 
-##### PUT `/v2/api/list/:id` Change a list.
+##### PUT `/api/v2/list/:id` Change a list.
 
-##### DELETE `/v2/api/list/:id` Remove a list.
+##### DELETE `/api/v2/list/:id` Remove a list.
 
-##### PUT `/v2/api/lists/order` Change the order of lists.
+##### PUT `/api/v2/lists/order` Change the order of lists.
 
-##### PUT `/v2/api/opt` Change an option.
+##### PUT `/api/v2/opt` Change an option.
 
-##### GET `/v2/api/lists` Get all lists with pagination.
+##### GET `/api/v2/lists` Get all lists with pagination.
 
-##### PUT `/v2/api/list/:id/public` Make a list public.
+##### PUT `/api/v2/list/:id/public` Make a list public.
 

@@ -32,6 +32,8 @@ const authMiddleware = async (ctx, next) => {
     const token = ctx.header[jwtHeader]
     if (verifyToken(token)) {
       ctx.user = await getUserFromToken(token)
+    } else {
+      ctx.throw(401, 'token expired')
     }
   }
   await next()

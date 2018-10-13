@@ -17,7 +17,13 @@ apiRouter.options('*', ctx => {
   ctx.res.end()
 })
 apiRouter.use(async (ctx, next) => {
-  await next()
+  try {
+    await next()
+  } catch (error) {
+    if (error.status) ctx.status = error.status
+    else ctx.status = 500
+    ctx.body = { status: 'error', message: error.message }
+  }
   if (!ctx.body) {
     if (ctx.status === 200) {
       ctx.body = { status: 'success' }
