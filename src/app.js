@@ -5,10 +5,12 @@ const Koa = require('koa')
 const mongoose = require('mongoose')
 const bodyparser = require('koa-bodyparser')
 const apiRouter = require('./api')
+const apiV2Router = require('./api/v2')
 const authRouter = require('./auth')
 const crypto = require('crypto')
 
 mongoose.connect(conf.mongodb, {
+  useCreateIndex: true,
   useNewUrlParser: true,
 })
 
@@ -44,6 +46,7 @@ app.use(async (ctx, next) => {
   if (ctx.path === '/') ctx.body = 'ok'
   await next()
 })
+app.use(apiV2Router.routes())
 app.use(apiRouter.routes())
 app.use(authRouter.routes())
 

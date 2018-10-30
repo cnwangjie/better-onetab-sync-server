@@ -19,7 +19,7 @@
     "koa-router": "^7.4.0",
     "koa2-cors": "^2.0.6",
     "lodash": "^4.17.10",
-    "mongoose": "^5.2.7",
+    "mongoose": "^5.3.3",
     "request": "^2.88.0",
     "request-promise": "^4.2.2"
   }

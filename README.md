@@ -66,4 +66,3 @@ So in the new version of sync server will provide a or more user friendly login 
 ##### GET `/api/v2/lists` Get all lists with pagination.
 
 ##### PUT `/api/v2/list/:id/public` Make a list public.
-

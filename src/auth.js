@@ -45,11 +45,13 @@ authRouter.get('/:type', async ctx => {
       ctx.user[oauthNameKey] = name
       await ctx.user.save()
     }
+    const token = jwt.genTokenForUser(ctx.user)
     if (state.ext) {
       const lend = state.ext
-      const token = jwt.genTokenForUser(ctx.user)
       const to = lend + '#' + token + '#'
       ctx.redirect(to)
+    } else {
+      ctx.body = 'success! Your token is #' + token + '#\nIf you installed Better Onetab it will get this token automatically.'
     }
   }
 })

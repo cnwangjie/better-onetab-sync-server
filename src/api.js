@@ -75,35 +75,6 @@ authorizeApiRouter.put('/opts', async ctx => {
   }
 })
 /**
- * @api {delete} /api/lists/:listIndex 删除一个列表
- */
-// authorizeApiRouter.delete('/lists/:listIndex', async ctx => {
-//   if (!isFinite(ctx.input.listIndex)) {
-//     ctx.status = 400
-//   } else if (!ctx.user || ctx.user.listIndex >= ctx.user.list.length) {
-//   } else {
-//     ctx.user.removeList(ctx.listIndex)
-//     await ctx.user.save()
-//     ctx.status = 200
-//   }
-// })
-/**
- * @api {post} /api/lists 添加一个列表
- */
-// authorizeApiRouter.post('/lists', async ctx => {
-//   if (ctx.user) {
-//     try {
-//       ctx.user.addList(detectAndParseJson(ctx.input.list))
-//       await ctx.user.save()
-//       ctx.status = 200
-//     } catch (error) {
-//       if (error.name === 'ValidationError') ctx.status = 400
-//       else ctx.status = 500
-//       throw error
-//     }
-//   }
-// })
-/**
  * @api {post} /api/lists 设置列表
  */
 authorizeApiRouter.put('/lists', async ctx => {

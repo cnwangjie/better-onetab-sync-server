@@ -1,14 +1,16 @@
 const mongoose = require('mongoose')
 
 const tabSchema = new mongoose.Schema({
-  favIconUrl: String,
+  favIconUrl: {
+    type: String,
+    default: '',
+  },
   url: {
     type: String,
     required: true,
   },
   title: {
     type: String,
-    required: true,
     default: '',
   },
   pinned: {

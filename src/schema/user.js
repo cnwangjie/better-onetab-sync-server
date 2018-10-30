@@ -40,13 +40,30 @@ const userSchema = new mongoose.Schema({
     versionKey: false,
   },
 }).method({
-  async addList(list) {
+  addList(list) {
     this.lists.unshift(list)
-    return this.save()
   },
-  async removeList(listIndex) {
-    this.lists.splice(listIndex, 1)
-    return this.save()
+  updateListById(listId, list) {
+    const list = this.lists.id(listId)
+    for (const [k, v] of Object.entries(list)) {
+      list[k] = v
+    }
+  },
+  removeListById(listId) {
+    this.lists.pull(listId)
+  },
+  changeListOrderRelatively(listId, diff) {
+    if (diff === 0) return
+    const list = this.lists.id(listId)
+    if (!list) return
+    const src = this.lists.indexOf(list)
+    this.lists.pull(listId)
+    this.lists.splice(src + diff, 0, list)
+  },
+  updateOpts(opts) {
+    for (const [k, v] of Object.entries(opts)) {
+      this.opts[k] = v
+    }
   },
 }).static({
   async genToken(uid) {
