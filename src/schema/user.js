@@ -43,9 +43,10 @@ const userSchema = new mongoose.Schema({
   addList(list) {
     this.lists.unshift(list)
   },
-  updateListById(listId, list) {
+  updateListById(listId, newList) {
     const list = this.lists.id(listId)
-    for (const [k, v] of Object.entries(list)) {
+    if (!list) return
+    for (const [k, v] of Object.entries(newList)) {
       list[k] = v
     }
   },

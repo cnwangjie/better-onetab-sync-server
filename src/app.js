@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const bodyparser = require('koa-bodyparser')
 const apiRouter = require('./api')
 const apiV2Router = require('./api/v2')
+const ssrRouter = require('./ssr')
 const authRouter = require('./auth')
 const crypto = require('crypto')
 
@@ -42,11 +43,8 @@ app.use(async (ctx, next) => {
     if (ctx.user) console.log(`[user]`, ctx.user)
   }
 })
-app.use(async (ctx, next) => {
-  if (ctx.path === '/') ctx.body = 'ok'
-  await next()
-})
 app.use(apiV2Router.routes())
 app.use(apiRouter.routes())
 app.use(authRouter.routes())
+app.use(ssrRouter.routes())
 

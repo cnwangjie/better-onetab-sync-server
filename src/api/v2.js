@@ -9,7 +9,7 @@ const {detectAndParseJson} = require('../util')
 const apiV2Router = module.exports = new Router({prefix: '/api/v2'})
 apiV2Router.use(cors({
   origin: '*',
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
   allowHeaders: [conf.jwt_header],
   exposeHeaders: [conf.jwt_header],
 }))
@@ -84,9 +84,9 @@ apiV2Router.post('/lists/bulk', async ctx => {
   const changes = detectAndParseJson(ctx.input.changes)
   if (!Array.isArray(changes)) ctx.throw(400, '`changes must be an array`')
   while (changes.length) {
-    const [method, ...args] = changes.unshift()
+    const [method, ...args] = changes.shift()
     if (!(method in User.schema.methods)
-      || args.length !== User.schema.methods[method.length]) ctx.throw(400)
+      || args.length !== User.schema.methods[method].length) ctx.throw(400)
     user[method](...args)
   }
   ctx.user.listsUpdatedAt = new Date()
@@ -101,6 +101,7 @@ apiV2Router.put('/opts', async ctx => {
   user.updateOpts(opts)
   user.optsUpdatedAt = new Date()
   await user.save()
+  ctx.body = {status: 'success', optsUpdatedAt: user.optsUpdatedAt}
 })
 apiV2Router.all('*', async ctx => {
   ctx.body = 'ok'

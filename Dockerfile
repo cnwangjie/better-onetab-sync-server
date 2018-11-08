@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN yarn --production && yarn cache clean
+RUN yarn --production && yarn cache clean && yarn build
 
 EXPOSE 3000:3000
 

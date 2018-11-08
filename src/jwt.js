@@ -16,7 +16,7 @@ const verifyToken = token => {
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError
       && error.message.startsWith('jwt expired')
-      && payload.iat + 30 * 24 * 60 * 60 < Date.now() / 1000) {
+      && jwt.decode(token).iat + 30 * 24 * 60 * 60 > Date.now() / 1000) {
       return true
     }
   }
@@ -28,8 +28,8 @@ const getUserFromToken = token => {
 }
 
 const authMiddleware = async (ctx, next) => {
-  if (ctx.header[jwtHeader]) {
-    const token = ctx.header[jwtHeader]
+  const token = ctx.header[jwtHeader] || ctx.cookies.get(jwtHeader)
+  if (token) {
     if (verifyToken(token)) {
       ctx.user = await getUserFromToken(token)
     } else {

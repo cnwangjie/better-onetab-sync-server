@@ -20,6 +20,7 @@ apiRouter.use(async (ctx, next) => {
   try {
     await next()
   } catch (error) {
+    console.log(error)
     if (error.status) ctx.status = error.status
     else ctx.status = 500
     ctx.body = { status: 'error', message: error.message }

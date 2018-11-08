@@ -2,12 +2,18 @@ const Router = require('koa-router')
 const User = require('./schema/user')
 const google = require('./service/google')
 const github = require('./service/github')
+const conf = require('@cnwangjie/conf')
 const jwt = require('./jwt')
 
 const authRouter = module.exports = new Router({prefix: '/auth'})
-authRouter.use(jwt.authMiddleware)
 
 const oauthServices = { google, github }
+
+authRouter.get('/', ctx => {
+  console.log('!!!')
+  ctx.state.token = 'token!!!'
+  ctx.ssr('/auth', {req: ctx.req, res: ctx.res, token: 'token!!!!'})
+})
 
 authRouter.get('/:type', async ctx => {
 
@@ -51,7 +57,11 @@ authRouter.get('/:type', async ctx => {
       const to = lend + '#' + token + '#'
       ctx.redirect(to)
     } else {
-      ctx.body = 'success! Your token is #' + token + '#\nIf you installed Better Onetab it will get this token automatically.'
+      ctx.cookies.set(conf.jwt_header, token, {
+        maxAge: 3600 * 1000 * 24 * 30,
+        httpOnly: false,
+      })
+      ctx.redirect('/success')
     }
   }
 })
