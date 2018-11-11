@@ -41,6 +41,7 @@ const userSchema = new mongoose.Schema({
   },
 }).method({
   addList(list) {
+    if (list._id && this.lists.id(list._id)) return
     this.lists.unshift(list)
   },
   updateListById(listId, newList) {

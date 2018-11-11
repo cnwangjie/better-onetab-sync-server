@@ -4,9 +4,6 @@ const { tabSchema } = require('./tab')
 const listSchema = new mongoose.Schema({
   tabs: {
     type: [tabSchema],
-    required() {
-      return this.tabs.length > 0
-    },
   },
   title: {
     type: String,
@@ -24,6 +21,8 @@ const listSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+}).pre('save', async function () {
+  if (this.tabs.length === 0) return this.remove()
 })
 
 module.exports = { listSchema }
