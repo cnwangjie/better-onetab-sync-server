@@ -3,6 +3,7 @@ const cors = require('koa2-cors')
 const Router = require('koa-router')
 const conf = require('@cnwangjie/conf')
 const jwt = require('../jwt')
+const socket = require('../socket')
 const User = require('../schema/user')
 const {detectAndParseJson} = require('../util')
 
@@ -33,6 +34,7 @@ apiV2Router.post('/list', async ctx => {
   if (validationErr) ctx.throw(400, validationErr)
   ctx.user.listsUpdatedAt = new Date()
   await user.save()
+  socket.emitToUser(user.uid, 'list.update', { method: 'addList', args: [ list ] })
   ctx.body = user.lists[0].toJSON()
 })
 apiV2Router.put('/list/:listId', async ctx => {
@@ -49,6 +51,7 @@ apiV2Router.put('/list/:listId', async ctx => {
   }
   ctx.user.listsUpdatedAt = new Date()
   await user.save()
+  socket.emitToUser(user.uid, 'list.update', { method: 'updateListById', args: [ ctx.input.listId, newList ] })
   ctx.body = rawList.toJSON()
 })
 apiV2Router.delete('/list/:listId', async ctx => {
@@ -59,6 +62,7 @@ apiV2Router.delete('/list/:listId', async ctx => {
   user.removeListById(ctx.input.listId)
   ctx.user.listsUpdatedAt = new Date()
   await user.save()
+  socket.emitToUser(user.uid, 'list.update', { method: 'removeListById', args: [ ctx.input.listId ] })
   ctx.body = {status: 'success'}
 })
 apiV2Router.post('/list/:listId/order', async ctx => {
@@ -76,6 +80,7 @@ apiV2Router.post('/list/:listId/order', async ctx => {
   }
   ctx.user.listsUpdatedAt = new Date()
   await user.save()
+  socket.emitToUser(user.uid, 'list.update', { method: 'changeListOrderRelatively', args: [ ctx.input.listId, +diff ] })
   ctx.body = {status: 'success'}
 })
 apiV2Router.post('/lists/bulk', async ctx => {
@@ -83,14 +88,16 @@ apiV2Router.post('/lists/bulk', async ctx => {
   if (!user) ctx.throw(401)
   const changes = detectAndParseJson(ctx.input.changes)
   if (!Array.isArray(changes)) ctx.throw(400, '`changes must be an array`')
-  while (changes.length) {
-    const [method, ...args] = changes.shift()
+  for (const [method, ...args] of changes) {
     if (!(method in User.schema.methods)
       || args.length !== User.schema.methods[method].length) ctx.throw(400)
     user[method](...args)
   }
   ctx.user.listsUpdatedAt = new Date()
   await user.save()
+  for (const [method, ...args] of changes) {
+    socket.emitToUser(user.uid, 'list.update', { method, args })
+  }
   ctx.body = {status: 'success', listsUpdatedAt: user.listsUpdatedAt}
 })
 apiV2Router.put('/opts', async ctx => {
@@ -101,6 +108,7 @@ apiV2Router.put('/opts', async ctx => {
   user.updateOpts(opts)
   user.optsUpdatedAt = new Date()
   await user.save()
+  socket.emitToUser(user.uid, 'opts.set', opts)
   ctx.body = {status: 'success', optsUpdatedAt: user.optsUpdatedAt}
 })
 apiV2Router.all('*', async ctx => {

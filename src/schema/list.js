@@ -21,6 +21,11 @@ const listSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  tags: {
+    type: [String],
+  },
+}, {
+  timestamps: true,
 }).pre('save', async function () {
   if (this.tabs.length === 0) return this.remove()
 })

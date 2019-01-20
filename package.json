@@ -27,6 +27,7 @@
     "nuxt": "^2.1.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
+    "socket.io": "^2.2.0",
     "vuetify": "^1.2.7"
   }
 }

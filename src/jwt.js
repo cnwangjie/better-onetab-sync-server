@@ -43,6 +43,7 @@ const authMiddleware = async (ctx, next) => {
 }
 
 module.exports = {
+  decode: jwt.decode,
   genTokenForUser,
   verifyToken,
   getUserFromToken,
