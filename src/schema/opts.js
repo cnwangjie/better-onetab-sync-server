@@ -20,8 +20,6 @@ const optsSchema = new mongoose.Schema({
   removeDuplicate: Boolean,
   enableSearch: Boolean,
   openEnd: Boolean,
-}, {
-  timestamps: true,
 })
 
 module.exports = { optsSchema }

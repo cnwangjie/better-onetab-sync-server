@@ -5,6 +5,14 @@ It will provide more features like sharing or management in the future.
 
 ## Development notes
 
+### Todo
+
+ - [ ] complete API paramater validation
+ - [ ] restrict socket connect from application
+ - [ ] remove useless API
+ - [ ] refactor structure
+ - [ ] front page
+
 ### Authorization
 
 Visiting `/auth/:type` will go to OAuth page and the final page will take the jwt token in header.

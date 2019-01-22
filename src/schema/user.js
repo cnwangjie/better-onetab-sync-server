@@ -44,12 +44,13 @@ const userSchema = new mongoose.Schema({
     if (list._id && this.lists.id(list._id)) return
     this.lists.unshift(list)
   },
-  updateListById(listId, newList) {
+  updateListById(listId, newList, time) {
     const list = this.lists.id(listId)
     if (!list) return
     for (const [k, v] of Object.entries(newList)) {
       list[k] = v
     }
+    list.updatedAt = time
   },
   removeListById(listId) {
     this.lists.pull(listId)

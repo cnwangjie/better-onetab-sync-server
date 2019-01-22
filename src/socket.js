@@ -10,6 +10,11 @@ io.on('connection', socket => {
   const uid = jwt.decode(token).sub
   socket.join(uid)
 
+  socket.on('list.time', async cb => {
+    const user = await User.findOne({uid})
+    cb(user.listsUpdatedAt.valueOf())
+  })
+
   socket.on('list.update', async ({method, args}, cb) => {
     if (!(method in User.schema.methods)
       || args.length !== User.schema.methods[method].length) return cb({ err: 'args error' })
@@ -20,11 +25,6 @@ io.on('connection', socket => {
     try {
       await user.save()
       const result = { err: null }
-      if (method === 'updateListById') {
-        const updatedAt = Date.parse(user.lists.id(args[0]).updatedAt)
-        result.updatedAt = updatedAt
-        args[1].updatedAt = updatedAt
-      }
       socket.to(uid).emit('list.update', {method, args})
       return cb(result)
     } catch (error) {
@@ -32,7 +32,7 @@ io.on('connection', socket => {
     }
   })
 
-  socket.on('list.all', async (cb) => {
+  socket.on('list.all', async cb => {
     const user = await User.findOne({uid})
     const lists = user.lists.map(list => _.pick(list, ['_id', 'updatedAt']))
     cb(lists)
@@ -44,19 +44,28 @@ io.on('connection', socket => {
     cb(list)
   })
 
-  socket.on('opts.all', async (cb) => {
+  socket.on('opts.time', async cb => {
+    const user = await User.findOne({uid})
+    cb(user.optsUpdatedAt.valueOf())
+  })
+
+  socket.on('opts.all', async cb => {
     const user = await User.findOne({uid})
     cb(user.opts.toJSON())
   })
 
-  socket.on('opts.set', async (obj, cb) => {
+  socket.on('opts.set', async ({opts, time}, cb) => {
     const user = await User.findOne({uid})
-    for (const [k, v] of Object.entries(obj)) {
+    if (time > Date.now() || time < user.optsUpdatedAt.valueOf())
+      return cb({ err: 'invalid time' })
+
+    for (const [k, v] of Object.entries(opts)) {
       user.opts[k] = v
     }
+    user.optsUpdatedAt = time
     try {
       await user.save()
-      socket.to(uid).emit('opts.set', obj)
+      socket.to(uid).emit('opts.set', {opts, time})
       return cb({ err: null })
     } catch (error) {
       return cb({ err: 'save err' })
