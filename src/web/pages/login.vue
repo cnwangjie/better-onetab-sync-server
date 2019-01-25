@@ -39,11 +39,7 @@ export default {
   },
 }
 </script>
-<style lang="css" scoped>
-.icon {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  left: 0;
-}
+<style scoped>
+@import '../assets/icon.css';
 </style>
+
