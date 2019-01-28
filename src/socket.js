@@ -3,11 +3,15 @@ const io = require('socket.io')()
 const jwt = require('./jwt')
 const conf = require('@cnwangjie/conf')
 const User = require('./schema/user')
+const logger = require('./logger')
 
 io.on('connection', socket => {
   const token = socket.handshake.query[conf.jwt_header]
   if (!jwt.verifyToken(token)) return socket.disconnect()
   const uid = jwt.decode(token).sub
+  socket.on('error', error => {
+    logger.log(error)
+  })
   socket.join(uid)
 
   socket.on('list.time', async cb => {

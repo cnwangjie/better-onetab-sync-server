@@ -4,11 +4,9 @@ const optsSchema = new mongoose.Schema({
   browserAction: String,
   itemClickAction: String,
   popupItemClickAction: String,
-  removeItemBtnPos: String,
   defaultNightMode: Boolean,
   itemDisplay: String,
   hideFavicon: Boolean,
-  fixedToolbar: Boolean,
   addHistory: Boolean,
   ignorePinned: Boolean,
   pinNewList: Boolean,
@@ -18,8 +16,14 @@ const optsSchema = new mongoose.Schema({
   alertRemoveList: Boolean,
   excludeIllegalURL: Boolean,
   removeDuplicate: Boolean,
-  enableSearch: Boolean,
   openEnd: Boolean,
+  openTabListNoTab: Boolean,
+  listsPerPage: String,
+  titleFontSize: String,
+  disableDynamicMenu: Boolean,
+  disableExpansion: Boolean,
+  disableTransition: Boolean,
+  disableSearch: Boolean,
 })
 
 module.exports = { optsSchema }
